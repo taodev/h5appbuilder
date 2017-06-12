@@ -1,15 +1,15 @@
 {
   "entry": "src/index.js",
+  "outputPath": "../buildserver/html",
+  "publicPath": "/html/",
+  "extraBabelPlugins": [
+    "transform-runtime",
+    ["import", { "libraryName": "antd", "style": "css" }]
+  ],
   "env": {
     "development": {
       "extraBabelPlugins": [
-        "dva-hmr",
-        "transform-runtime"
-      ]
-    },
-    "production": {
-      "extraBabelPlugins": [
-        "transform-runtime"
+        "dva-hmr"
       ]
     }
   }
