@@ -1,10 +1,21 @@
 package routers
 
 import (
-	"github.com/taodev/h5appbuilder/buildserver/controllers"
 	"github.com/astaxie/beego"
+	"github.com/taodev/h5appbuilder/buildserver/controllers"
 )
 
 func init() {
-    beego.Router("/", &controllers.MainController{})
+	beego.Router("/", &controllers.IndexController{})
+
+	beego.Router("/", &controllers.IndexController{})
+
+	ns := beego.NewNamespace("/api/v1",
+		beego.NSNamespace("/auth",
+			beego.NSInclude(
+				&controllers.AuthController{},
+			),
+		),
+	)
+	beego.AddNamespace(ns)
 }

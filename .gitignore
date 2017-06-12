@@ -1,5 +1,7 @@
 # Binaries for programs and plugins
 *.exe
+*.exe~
+*.tmp
 *.dll
 *.so
 *.dylib
