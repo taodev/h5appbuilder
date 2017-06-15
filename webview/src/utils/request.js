@@ -1,4 +1,7 @@
 import fetch from 'dva/fetch';
+import reqwest from 'reqwest';
+import { message } from 'antd';
+import { loginInfo } from '../services/login';
 
 function parseJSON(response) {
   return response.json();
@@ -26,5 +29,36 @@ export default function request(url, options) {
     .then(checkStatus)
     .then(parseJSON)
     .then(data => ({ data }))
+    .catch(err => ({ err }));
+}
+
+export function westRequest(requestUrl, data) {
+  reqwest({
+    url: requestUrl,
+    method: 'post',
+    data: {
+      ...data,
+    },
+    type: 'json',
+    headers: {
+      'X-H5APP-ACCOUNT': loginInfo.username,
+      'X-H5APP-TOKEN': loginInfo.token,
+    },
+  }).then(response => ({ response }))
+    .fail((err, msg) => {
+      message.error(err, msg);
+    });
+}
+
+export function westRequestForm(requestUrl, data) {
+  reqwest({
+    url: requestUrl,
+    method: 'post',
+    data: {
+      ...data,
+    },
+  }).then(checkStatus)
+    .then(parseJSON)
+    .then(response => ({ response }))
     .catch(err => ({ err }));
 }
