@@ -12,5 +12,10 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
+/buildserver/cache/
+/buildserver/html/upload
+/buildserver/html/apk
+/buildserver/export/
+
 # Project-local glide cache, RE: https://github.com/Masterminds/glide/issues/736
 .glide/

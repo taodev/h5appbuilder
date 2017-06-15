@@ -3,12 +3,14 @@ package main
 import (
 	"mime"
 	"os"
+	"time"
 
 	"github.com/taodev/h5appbuilder/buildserver/models"
 	_ "github.com/taodev/h5appbuilder/buildserver/routers"
 
 	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/plugins/cors"
+
+	_ "github.com/taodev/h5appbuilder/buildserver/apkbuilder"
 )
 
 func initialize() {
@@ -30,6 +32,8 @@ func initArgs() {
 func main() {
 	initialize()
 
+	beego.Debug(time.Now().UnixNano())
+
 	// 设置静态目录
 	beego.SetStaticPath("/html", "html")
 	beego.SetStaticPath("/static", "html/static")
@@ -39,14 +43,23 @@ func main() {
 		beego.BConfig.WebConfig.StaticDir["/swagger"] = "swagger"
 	}
 
-	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
-		// AllowOrigins: []string{"http://localhost:8000"},
-		AllowAllOrigins:  true,
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Authorization", "Access-Control-Allow-Origin", "Access-Control-Allow-Headers", "Content-Type"},
-		ExposeHeaders:    []string{"Content-Length", "Access-Control-Allow-Origin", "Access-Control-Allow-Headers", "Content-Type"},
-		AllowCredentials: true,
-	}))
+	//	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
+	//		// AllowOrigins: []string{"http://localhost:8000"},
+	//		AllowAllOrigins: true,
+	//		AllowMethods:    []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+	//		AllowHeaders: []string{
+	//			"Origin",
+	//			"Authorization",
+	//			"Access-Control-Allow-Origin",
+	//			"Access-Control-Allow-Headers",
+	//			"Content-Type",
+	//			"X-Requested-With",
+	//			"X-H5APP-ACCOUNT",
+	//			"X-H5APP-TOKEN",
+	//		},
+	//		ExposeHeaders:    []string{"Content-Length", "Access-Control-Allow-Origin", "Access-Control-Allow-Headers", "Content-Type"},
+	//		AllowCredentials: true,
+	//	}))
 
 	beego.Run()
 }

@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"encoding/json"
 	"errors"
 	"time"
 
@@ -17,8 +16,8 @@ type AuthController struct {
 }
 
 type MsgLoginRequest struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+	Username string `form:"username"`
+	Password string `form:"password"`
 }
 
 type MsgLoginRet struct {
@@ -27,13 +26,13 @@ type MsgLoginRet struct {
 	Token   string
 }
 
-// @router /login [*]
+// @router /login [post]
 func (c *AuthController) Login() {
 	var result MsgLoginRet
 	c.Data["json"] = &result
 
 	var req MsgLoginRequest
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &req)
+	err := c.ParseForm(&req)
 	if err != nil {
 		result.Code = -1
 		result.Message = err.Error()
@@ -55,6 +54,12 @@ func (c *AuthController) Login() {
 	result.Code = 0
 	result.Message = "登陆成功"
 	result.Token = m.NewToken(req.Username)
+	c.ServeJSON()
+}
+
+// @router /login [options]
+func (c *AuthController) LoginOptions() {
+	c.Data["json"] = "OK"
 	c.ServeJSON()
 }
 

@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+echo Start build
+
+AppDir=$1
+WorkDir=$2
+GameName=$3
+NowTime=$4
+Id=$5
+Icon=$6
+RoundIcon=$7
+Splash=$8
+
+./resizeimage --input-file=${AppDir}/html/upload/${Icon} --output-file=${WorkDir}/app/src/main/res/mipmap-hdpi/ic_launcher.png --width=72 --height=72
+./resizeimage --input-file=${AppDir}/html/upload/${Icon} --output-file=${WorkDir}/app/src/main/res/mipmap-mdpi/ic_launcher.png --width=48 --height=48
+./resizeimage --input-file=${AppDir}/html/upload/${Icon} --output-file=${WorkDir}/app/src/main/res/mipmap-xhdpi/ic_launcher.png --width=96 --height=96
+./resizeimage --input-file=${AppDir}/html/upload/${Icon} --output-file=${WorkDir}/app/src/main/res/mipmap-xxhdpi/ic_launcher.png --width=144 --height=144
+./resizeimage --input-file=${AppDir}/html/upload/${Icon} --output-file=${WorkDir}/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png --width=192 --height=192
+
+./resizeimage --input-file=${AppDir}/html/upload/${RoundIcon} --output-file=${WorkDir}/app/src/main/res/mipmap-hdpi/ic_launcher_round.png --width=72 --height=72
+./resizeimage --input-file=${AppDir}/html/upload/${RoundIcon} --output-file=${WorkDir}/app/src/main/res/mipmap-mdpi/ic_launcher_round.png --width=48 --height=48
+./resizeimage --input-file=${AppDir}/html/upload/${RoundIcon} --output-file=${WorkDir}/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png --width=96 --height=96
+./resizeimage --input-file=${AppDir}/html/upload/${RoundIcon} --output-file=${WorkDir}/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png --width=144 --height=144
+./resizeimage --input-file=${AppDir}/html/upload/${RoundIcon} --output-file=${WorkDir}/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png --width=192 --height=192
+
+./resizeimage --input-file=${AppDir}/html/upload/${Splash} --output-file=${WorkDir}/app/src/main/res/drawable/splash.png --width=768 --height=1280
+
+cd ${WorkDir}
+${AppDir}/gradlebuild
+cd ${AppDir}
+
+mv -f ${WorkDir}/app/build/outputs/apk/app-release.apk ${AppDir}/html/apk/${GameName}_${Id}_${NowTime}.apk
+
+echo ${GameName}
+
+exit
