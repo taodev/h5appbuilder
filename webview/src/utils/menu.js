@@ -2,18 +2,28 @@ export const MenuTree = [
   {
     id: 1000,
     icon: 'laptop',
-    name: '微端生成',
-    router: '/builder',
+    name: '游戏管理',
+    router: '/app',
+    children: [
+      {
+        id: 1001,
+        icon: 'laptop',
+        name: '微端生成',
+        router: '/app/builder',
+      },
+    ],
   },
   {
     id: 2000,
-    icon: 'system',
+    icon: 'file',
     name: '系统管理',
+    router: '/system',
     children: [
       {
         id: 2001,
         icon: 'user',
         name: '用户管理',
+        router: '/system/users',
       },
       {
         id: 2002,

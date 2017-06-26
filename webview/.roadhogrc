@@ -4,7 +4,7 @@
   "publicPath": "/html/",
   "extraBabelPlugins": [
     "transform-runtime",
-    ["import", { "libraryName": "antd", "style": "css" }]
+    ["import", { "libraryName": "antd", "style": true }]
   ],
   "env": {
     "development": {

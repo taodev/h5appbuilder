@@ -1,10 +1,8 @@
 import React from 'react';
 import { connect } from 'dva';
 import { Button, Row, Form, Input, Alert } from 'antd';
-import reqwest from 'reqwest';
-import { loginInfo } from '../../services/login';
 
-import styles from './Login.less';
+import styles from './index.less';
 
 const FormItem = Form.Item;
 
@@ -13,31 +11,13 @@ class Login extends React.Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        // this.props.dispatch({ type: 'login/login', payload: {...values} });
-        // westRequest('http://localhost:8080/api/v1/auth/login', values);
-        this.props.dispatch({ type: 'login/showLoginLoading' });
-
-        loginInfo.username = values.username;
-
-        reqwest({
-          url: '/api/v1/auth/login',
-          method: 'post',
-          data: { ...values },
-          type: 'json',
-        }).then((data) => {
-          this.props.dispatch({ type: 'login/onLogin', payload: data });
-        })
-        .fail(() => {
-          this.props.dispatch({ type: 'login/hideLoginLoading' });
-        })
-        .always(() => {
-          this.props.dispatch({ type: 'login/hideLoginLoading' });
-        });
+        this.props.dispatch({ type: 'auth/login', payload: values });
       }
     });
   }
+
   renderMessage() {
-    const { errorCode, errorMessage } = this.props.login;
+    const { errorCode, errorMessage } = this.props.auth;
     if (errorCode !== 0) {
       return (
         <Alert message={errorMessage} type="error" showIcon />
@@ -46,9 +26,10 @@ class Login extends React.Component {
 
     return (<div />);
   }
+
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { loginLoading } = this.props.login;
+    const loginLoading = this.props.loading;
 
     return (
       <div className={styles.form}>
@@ -86,4 +67,10 @@ class Login extends React.Component {
   }
 }
 
-export default connect(({ login }) => ({ login }))(Form.create()(Login));
+export default connect(({
+  auth,
+  loading,
+}) => ({
+  auth,
+  loading: loading.models.auth,
+}))(Form.create()(Login));
