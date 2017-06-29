@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/orm"
 	jwt "github.com/dgrijalva/jwt-go"
 	. "github.com/taodev/h5appbuilder/buildserver/extlibs"
 	m "github.com/taodev/h5appbuilder/buildserver/models"
@@ -51,10 +52,53 @@ func (c *AuthController) Login() {
 
 	beego.Debug(user)
 
+	<-time.After(time.Second * 2)
+
 	result.Code = 0
 	result.Message = "登陆成功"
 	result.Token = m.NewToken(req.Username)
 	c.ServeJSON()
+}
+
+type MsgLogoutRet struct {
+	Code    int
+	Message string
+}
+
+// @router /logout [post]
+func (c *AuthController) Logout() {
+	var result MsgLogoutRet
+	c.Data["json"] = &result
+	c.ServeJSON()
+}
+
+type QueryAppArgs struct {
+	Count     int    `json:"results"`
+	Page      int    `json:"page"`
+	SortField string `json:"sortField"`
+	SortOrder string `json:"sortOrder"`
+}
+
+type QueryAppResp struct {
+	Results []m.AppTable `json:"results"`
+}
+
+// @router /queryapp [get]
+func (c *AuthController) QueryApp() {
+	var req QueryAppArgs
+	c.ParseForm(&req)
+
+	result, _ := m.AppModel_Query(req.Count, req.Page, req.SortField, req.SortOrder)
+
+	c.Data["json"] = &QueryAppResp{
+		Results: result,
+	}
+	c.ServeJSON()
+}
+
+type QueryTableResp struct {
+	Results []orm.Params `json:"results"`
+	Count   int64        `json:"total"`
 }
 
 // @router /login [options]

@@ -23,7 +23,7 @@ func Syncdb() {
 	// 数据库别名
 	name := "default"
 	// drop table 后再建表
-	force := true
+	force := false
 	// 打印执行过程
 	verbose := true
 	// 遇到错误立即返回
@@ -67,6 +67,11 @@ func Connect() {
 	orm.RegisterDataBase("default", db_type, dsn)
 
 	orm.Debug = true
+
+	err := orm.RunSyncdb("default", false, true)
+	if err != nil {
+		fmt.Println(err)
+	}
 }
 
 //创建数据库

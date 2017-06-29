@@ -52,6 +52,68 @@ func init() {
 	orm.RegisterModel(new(User))
 }
 
+func UserModel_Query(page_size int64, page int64, sortField string, sortOrder string) (users []orm.Params, count int64) {
+	//	var result []AppTable
+	//	var err error
+
+	//	o := orm.NewOrm()
+
+	//	var orderSql string
+
+	//	if len(sortField) > 0 {
+	//		sortSql := ""
+	//		if sortOrder == "descend" {
+	//			sortSql = " DESC"
+	//		}
+	//		orderSql = fmt.Sprintf("ORDER BY %s%s", sortField, sortSql)
+	//	}
+
+	//	var limitSql string
+	//	if count > 0 {
+	//		limitSql = "LIMIT "
+	//		if page > 0 {
+	//			limitSql += fmt.Sprintf("%d, ", count*page)
+	//		}
+
+	//		limitSql += fmt.Sprintf("%d", count)
+	//	}
+
+	//	num, err := o.Raw(fmt.Sprintf("SELECT * FROM user %s %s", orderSql, limitSql)).QueryRows(&result)
+	//	if err != nil {
+	//		fmt.Println("app nums: ", num)
+	//	}
+
+	//	return result, err
+
+	o := orm.NewOrm()
+	user := new(User)
+
+	qs := o.QueryTable(user)
+	var offset int64
+	if page <= 1 {
+		offset = 0
+	} else {
+		offset = (page - 1) * page_size
+	}
+
+	query := qs.Limit(page_size, offset)
+
+	if len(sortField) > 0 {
+		sortSql := sortField
+
+		if sortOrder == "descend" {
+			sortSql = "-" + sortField
+		}
+
+		query = query.OrderBy(sortSql)
+	}
+
+	query.Values(&users)
+	count, _ = qs.Count()
+
+	return users, count
+}
+
 /************************************************************/
 
 //get user list

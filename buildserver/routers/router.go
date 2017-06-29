@@ -16,6 +16,11 @@ func init() {
 				&controllers.AuthController{},
 			),
 		),
+		beego.NSNamespace("/user",
+			beego.NSInclude(
+				&controllers.UserController{},
+			),
+		),
 		beego.NSNamespace("/upload",
 			beego.NSInclude(
 				&controllers.UploadController{},

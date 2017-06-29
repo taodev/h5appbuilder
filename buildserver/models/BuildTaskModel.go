@@ -9,6 +9,7 @@ import (
 //用户表
 type BuildTask struct {
 	Id               int64
+	UserId           int64     `orm:"column(userid)"`
 	Username         string    `orm:"size(32)" form:"Username"  valid:"Required;MaxSize(20);MinSize(6)"`
 	Createtime       time.Time `orm:"type(datetime);auto_now_add" `
 	Status           int       `orm:"default(0)"`

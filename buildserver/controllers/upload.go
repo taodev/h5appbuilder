@@ -21,26 +21,27 @@ type UploadResponse struct {
 }
 
 type UploadResult struct {
-	UID      string         `json:"uid"`
-	Name     string         `json:"name"`
-	Status   string         `json:"status"`
-	Response UploadResponse `json:"response"`
+	UID    string `json:"uid"`
+	Name   string `json:"name"`
+	Status string `json:"status"`
+	// Response UploadResponse `json:"response"`
+	URL     string `json:"url"`
+	Message string `json:"message"`
 }
 
 // @router /icon [post]
 func (c *UploadController) UploadIcon() {
 	iconType := c.GetString("icon_type", "icon")
-	iconName := iconType + "_image"
+	// iconName := iconType + "_image"
 
 	var result UploadResult
 
-	file, header, err := c.GetFile(iconName)
+	file, header, err := c.GetFile("file")
 	if err != nil {
 		beego.Warn(err)
 		result.UID = "-1"
 		result.Status = "error"
-		result.Response.Status = "failed"
-		result.Response.Message = err.Error()
+		result.Message = err.Error()
 		c.Data["json"] = result
 		c.ServeJSON()
 		return
@@ -50,13 +51,12 @@ func (c *UploadController) UploadIcon() {
 	path := "./html/upload/" + filename
 	file.Close()
 
-	err = c.SaveToFile(iconName, path)
+	err = c.SaveToFile("file", path)
 	if err != nil {
 		beego.Warn(err)
 		result.UID = "-1"
 		result.Status = "error"
-		result.Response.Status = "failed"
-		result.Response.Message = err.Error()
+		result.Message = err.Error()
 		c.Data["json"] = result
 		c.ServeJSON()
 		return
@@ -65,9 +65,8 @@ func (c *UploadController) UploadIcon() {
 	result.UID = "101"
 	result.Name = header.Filename
 	result.Status = "done"
-	result.Response.Status = "success"
-	result.Response.URL = filename
-	result.Response.Message = "上传成功"
+	result.URL = filename
+	result.Message = "上传成功"
 
 	c.Data["json"] = result
 	c.ServeJSON()
