@@ -69,6 +69,7 @@ class LayoutMenu extends React.Component {
 
 LayoutMenu.contextTypes = {
   router: PropTypes.object,
+  loading: PropTypes.bool,
 };
 
 export default LayoutMenu;

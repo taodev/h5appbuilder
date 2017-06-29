@@ -8,8 +8,6 @@ import App from './routes/App.js';
 
 import Builder from './routes/Builder.js';
 
-import Log from './routes/Log.js';
-
 import Users from './routes/Users.js';
 
 const checkLogin = (next, replace, callback) => {
@@ -31,7 +29,7 @@ function RouterConfig({ history }) {
       <Route path="/" component={App} onEnter={checkLogin} breadcrumbName="首页">
         <IndexRedirect to="/app/builder" />
         <Route path="/app/builder" component={Builder} breadcrumbName="微端生成" />
-        <Route path="/system/log" component={Log} breadcrumbName="日志查看" />
+        <Route path="/system/log" component={Users} breadcrumbName="日志查看" />
         <Route path="/system/users" component={Users} breadcrumbName="用户管理" />
       </Route>
       <Route path="/login" component={Login} onEnter={checkLogin} />

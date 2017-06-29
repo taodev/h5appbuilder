@@ -27,8 +27,9 @@ export const MenuTree = [
       },
       {
         id: 2002,
-        icon: 'system',
+        icon: 'user',
         name: '日志查看',
+        router: '/system/log',
       },
     ],
   },

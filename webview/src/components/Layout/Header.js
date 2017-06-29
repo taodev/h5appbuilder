@@ -13,33 +13,26 @@ class Header extends React.Component {
   render() {
     return (
       <div className={styles.header}>
-        <Row type="flex" justify="space-between" align="middle">
-          <Col span={6}>
-            <div style={{ paddingLeft: 16 }}>
-              <Select
-                size="large"
-                style={{ width: 200 }}
-                defaultValue="1"
-              >
-                <Option key="1"><Icon type="tablet" />传奇世界</Option>
-              </Select>
-            </div>
+        <Row type="flex" justify="space-between">
+          <Col span={6} style={{ marginLeft: 16, lineHeight: '47px' }}>
+            <Select
+              size="large"
+              style={{ width: 200 }}
+              defaultValue="1"
+            >
+              <Option key="1"><Icon type="tablet" />传奇世界</Option>
+            </Select>
           </Col>
-          <Col span={4} style={{ float: 'right' }}>
-            <div style={{ paddingLeft: 64 }}>
-              <Menu mode="horizontal" onClick={this.handleMenuClick}>
-                <Menu.SubMenu
-                  style={{
-                    float: 'right',
-                  }}
-                  title={<span> <Icon type="user" />Admin </span>}
-                >
-                  <Menu.Item key="logout">
-                    登出
-                  </Menu.Item>
-                </Menu.SubMenu>
-              </Menu>
-            </div>
+          <Col span={6} style={{ textAlign: 'right' }}>
+            <Menu mode="horizontal" onClick={this.handleMenuClick} style={{ textAlign: 'left' }}>
+              <Menu.SubMenu
+                title={<span> <Icon type="user" />Admin </span>}
+              >
+                <Menu.Item key="logout">
+                  登出
+                </Menu.Item>
+              </Menu.SubMenu>
+            </Menu>
           </Col>
         </Row>
       </div>
@@ -47,4 +40,4 @@ class Header extends React.Component {
   }
 }
 
-export default connect(({ app }) => ({ app }))(Header);
+export default connect(({ dispatch }) => ({ dispatch }))(Header);

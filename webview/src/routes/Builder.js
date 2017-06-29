@@ -1,11 +1,13 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Form, Row, Col, Input, Select, Button, Icon, Upload, message } from 'antd';
+import { Form, Row, Col, Input, Button, Icon, Upload, Radio, message } from 'antd';
 import { post } from '../utils/request';
 import { Line } from '../components/Layout';
 import styles from './Builder.less';
 
 const FormItem = Form.Item;
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 
 const formItemLayout = {
   labelCol: {
@@ -42,37 +44,44 @@ class Builder extends React.Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         post('/api/v1/upload/build', values);
+      } else {
+        message.error(err.message);
       }
     });
   }
 
   handleIconChange = (info) => {
     if (info.file.status === 'done') {
-      message.error(info.file.response.response.message);
+      message.error(info.file.response.message);
       getBase64(info.file.originFileObj, (imageUrl) => {
         this.props.dispatch({ type: 'builder/setIconImageUrl', payload: imageUrl });
       });
-      this.props.form.setFieldsValue({ icon: info.file.response.response.url });
     }
+  }
+
+  uploadFile = (e) => {
+    if (e.file.response) {
+      return e.file.response.url;
+    }
+
+    return '';
   }
 
   handleRoundIconChange = (info) => {
     if (info.file.status === 'done') {
-      message.error(info.file.response.response.message);
+      message.error(info.file.response.message);
       getBase64(info.file.originFileObj, (imageUrl) => {
         this.props.dispatch({ type: 'builder/setRoundImageUrl', payload: imageUrl });
       });
-      this.props.form.setFieldsValue({ round_icon: info.file.response.response.url });
     }
   }
 
   handleSplashChange = (info) => {
     if (info.file.status === 'done') {
-      message.error(info.file.response.response.message);
+      message.error(info.file.response.message);
       getBase64(info.file.originFileObj, (imageUrl) => {
         this.props.dispatch({ type: 'builder/setSplashImageUrl', payload: imageUrl });
       });
-      this.props.form.setFieldsValue({ splash: info.file.response.response.url });
     }
   }
 
@@ -101,7 +110,7 @@ class Builder extends React.Component {
           <Col xs={{ span: 24 }} sm={{ span: 12 }}>
             <FormItem {...formItemLayout} label="游戏链接" hasFeedback>
               {getFieldDecorator('gameurl', {
-                rules: [{ required: true, message: '请游戏链接', whitespace: true }],
+                rules: [{ required: true, message: '请输入游戏链接', whitespace: true }],
               })(<Input style={{ width: '90%' }} />)}
             </FormItem>
           </Col>
@@ -122,27 +131,24 @@ class Builder extends React.Component {
           </Col>
           <Col xs={{ span: 24 }} sm={{ span: 12 }}>
             <FormItem {...formItemLayout} label="屏幕方向" >
-              <Select defaultValue="0" style={{ width: 120 }} >
-                <Select.Option value="0">竖屏</Select.Option>
-                <Select.Option value="1">横屏</Select.Option>
-              </Select>
+              {getFieldDecorator('screen', {
+                initialValue: '0',
+              })(<RadioGroup>
+                <RadioButton value="0">竖屏</RadioButton>
+                <RadioButton value="1">横屏</RadioButton>
+              </RadioGroup>)}
             </FormItem>
           </Col>
         </Row>
         <Line />
         <Row>
           <Col xs={{ span: 24 }} sm={{ span: 12 }}>
-            <FormItem {...formItemLayout} label="图标" readonly="readonly" hasFeedback>
+            <FormItem {...formItemLayout} label="图标" hasFeedback>
               {getFieldDecorator('icon', {
-                rules: [{ required: true, message: '请上传256x256的png图标', whitespace: true }],
-              })(<Input style={{ width: '90%' }} disabled />)}
-            </FormItem>
-          </Col>
-          <Col xs={{ span: 24 }} sm={{ span: 12 }}>
-            <FormItem {...formItemLayout} label="点击上传" hasFeedback>
-              <Upload
+                rules: [{ required: true, message: '请上传游戏图标(256x256)或者(512x512)', whitespace: true }],
+                getValueFromEvent: this.uploadFile,
+              })(<Upload
                 className={styles.avatarUploader}
-                name="icon_image"
                 showUploadList={false}
                 action="/api/v1/upload/icon?icon_type=icon"
                 beforeUpload={beforeUpload}
@@ -153,21 +159,16 @@ class Builder extends React.Component {
                     <img src={iconImageUrl} alt="" className={styles.avatar} /> :
                     <Icon type="plus" className={styles.avatarUploaderTrigger} />
                 }
-              </Upload>
+              </Upload>)}
             </FormItem>
           </Col>
           <Col xs={{ span: 24 }} sm={{ span: 12 }}>
-            <FormItem {...formItemLayout} label="圆型图标" readonly="readonly" hasFeedback>
+            <FormItem {...formItemLayout} label="圆形图标" hasFeedback>
               {getFieldDecorator('round_icon', {
-                rules: [{ required: true, message: '请上传256x256的png图标', whitespace: true }],
-              })(<Input style={{ width: '90%' }} disabled />)}
-            </FormItem>
-          </Col>
-          <Col xs={{ span: 24 }} sm={{ span: 12 }}>
-            <FormItem {...formItemLayout} label="点击上传" hasFeedback>
-              <Upload
+                rules: [{ required: true, message: '请上传游戏圆形图标(256x256)或者(512x512)', whitespace: true }],
+                getValueFromEvent: this.uploadFile,
+              })(<Upload
                 className={styles.avatarUploader}
-                name="round_icon_image"
                 showUploadList={false}
                 action="/api/v1/upload/icon?icon_type=round_icon"
                 beforeUpload={beforeUpload}
@@ -178,32 +179,28 @@ class Builder extends React.Component {
                     <img src={roundImageUrl} alt="" className={styles.avatar} /> :
                     <Icon type="plus" className={styles.avatarUploaderTrigger} />
                 }
-              </Upload>
+              </Upload>)}
             </FormItem>
           </Col>
         </Row>
+        <Line />
         <Row>
-          <Col span={12}>
+          <Col xs={{ span: 24 }} sm={{ span: 12 }}>
             <FormItem {...formItemLayout} label="闪屏" hasFeedback>
               {getFieldDecorator('splash', {
-                rules: [{ required: true, message: '请上传768x1280的png闪屏图片', whitespace: true }],
-              })(<Input style={{ width: '90%' }} disabled />)}
-            </FormItem>
-            <FormItem {...formItemLayout} label="点击上传" hasFeedback>
-              <Upload
+                rules: [{ required: true, message: '请上传闪屏图片(768x1280)', whitespace: true }],
+                getValueFromEvent: this.uploadFile,
+              })(<Upload
                 className={styles.splashUploader}
-                name="splash_image"
                 showUploadList={false}
                 action="/api/v1/upload/icon?icon_type=splash"
                 beforeUpload={beforeUpload}
                 onChange={this.handleSplashChange}
               >
-                {
-                  splashImageUrl !== '' ?
-                    <img src={splashImageUrl} alt="" className={styles.splash} /> :
-                    <Icon type="plus" className={styles.splashUploaderTrigger} />
-                }
-              </Upload>
+                {splashImageUrl !== '' ?
+                  <img src={splashImageUrl} alt="" className={styles.splash} /> :
+                  <Icon type="plus" className={styles.splashUploaderTrigger} />}
+              </Upload>)}
             </FormItem>
           </Col>
         </Row>
